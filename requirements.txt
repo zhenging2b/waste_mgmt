@@ -1,5 +1,7 @@
---index-url https://download.pytorch.org/whl/cu128
-torch
-torchvision
-torchaudio
+torch --extra-index-url https://download.pytorch.org/whl/cu128
+torchvision --extra-index-url https://download.pytorch.org/whl/cu128
+torchaudio --extra-index-url https://download.pytorch.org/whl/cu128
 matplotlib
+numpy
+streamlit
+Pillow

@@ -6,7 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-FROM python:3.11-slim as base
+FROM python:3.11-slim as builder
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -37,7 +37,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # upgrade pip
 RUN pip install --upgrade pip && \
     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
-    pip install matplotlib numpy streamlit Pillow
+    pip install numpy streamlit Pillow && \
+    pip install boto3
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -48,10 +49,26 @@ RUN pip install --upgrade pip && \
 # USER appuser
 
 # Copy the source code into the container.
-COPY . .
+COPY stream_main.py .
+COPY clf_test.py .
 
 # Expose the port that the application listens on.
 EXPOSE 8501
+
+########################
+# --- Final stage ---
+########################
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /app/stream_main.py .
+COPY --from=builder /app/clf_test.py .
 
 # Run the application.
 CMD ["streamlit", "run", "stream_main.py", "--server.port=8501", "--server.address=0.0.0.0"]

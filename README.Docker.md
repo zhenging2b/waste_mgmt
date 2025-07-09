@@ -1,9 +1,13 @@
 ### Building and running your application
-
+Before running, you will have to have an `.env` file with 
+```
+AWS_ACCESS_KEY_ID=<your_aws_access_key>
+AWS_SECRET_ACCESS_KEY=<your_aws_secret_key>
+```
 When you're ready, start your application by running:
 `docker compose up --build`.
 
-Your application will be available at http://localhost:8000.
+Your application will be available at http://localhost:8501/.
 
 ### Deploying your application to the cloud
 

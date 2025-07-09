@@ -15,3 +15,9 @@ conda install -c anaconda ipykernel
 ```
 python -m ipykernel install --user --name={name_of_env}
 ```
+
+# To run streamlit 
+```
+steamlit run stream_main.py
+```
+
